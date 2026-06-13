@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ヘルスログ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .card {
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+<h1>ヘルスログ</h1>
+
+<div class="card">
+  <label>体重</label>
+  <input id="weight" type="number" placeholder="例：50">
+  
+  <label>メモ</label>
+  <input id="memo" type="text" placeholder="例：よく寝た">
+
+  <button onclick="save()">保存</button>
+</div>
+
+<div id="list"></div>
+
+<script>
+  function save() {
+    const weight = document.getElementById("weight").value;
+    const memo = document.getElementById("memo").value;
+
+    const data = JSON.parse(localStorage.getItem("logs") || "[]");
+
+    data.push({
+      weight,
+      memo,
+      date: new Date().toLocaleString()
+    });
+
+    localStorage.setItem("logs", JSON.stringify(data));
+    render();
+  }
+
+  function render() {
+    const list = document.getElementById("list");
+    const data = JSON.parse(localStorage.getItem("logs") || "[]");
+
+    list.innerHTML = "";
+
+    data.reverse().forEach(item => {
+      const div = document.createElement("div");
+      div.className = "card";
+      div.innerHTML = `
+        <strong>${item.date}</strong><br>
+        体重: ${item.weight}<br>
+        メモ: ${item.memo}
+      `;
+      list.appendChild(div);
+    });
+  }
+
+  render();
+</script>
+
+</body>
+</html>
